@@ -1,4 +1,4 @@
-const API_BASE = "http://localhost:8000";
+const API_BASE = "https://little-city-api.onrender.com";
 
 export interface Event {
   id: string;
