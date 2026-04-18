@@ -85,7 +85,11 @@ def fetch_events(days_ahead: int) -> list[dict]:
             "start_date": today.isoformat(),
             "end_date": cutoff.isoformat(),
         },
-        headers={"User-Agent": "Mozilla/5.0"},
+        headers={
+            "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+            "Accept": "application/json, text/plain, */*",
+            "Referer": "https://www.sfzoo.org/events/",
+        },
         timeout=15,
     )
     resp.raise_for_status()
@@ -151,6 +155,7 @@ def build_row(event: dict, cl: dict) -> dict:
         "emoji": cl.get("emoji") or None,
         "description": cl.get("description") or None,
         "address": event["address"],
+        "neighborhood": "West Portal",
         "lat": event["lat"],
         "lng": event["lng"],
         "starts_at": event["starts_at"],

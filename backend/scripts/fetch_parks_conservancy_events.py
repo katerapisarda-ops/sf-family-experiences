@@ -188,7 +188,7 @@ def fetch_events(days_ahead: int) -> list[dict]:
 
     for page in range(20):  # Max 20 pages
         url = f"{EVENTS_URL}?page={page}"
-        resp = requests.get(url, headers={"User-Agent": "Mozilla/5.0"}, timeout=15)
+        resp = requests.get(url, headers={"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"}, timeout=15)
         resp.raise_for_status()
         soup = BeautifulSoup(resp.text, "lxml")
 
@@ -290,6 +290,7 @@ def build_row(event: dict, cl: dict) -> dict:
         "name": event["name"],
         "description": cl.get("description") or None,
         "address": event["address"],
+        "neighborhood": event.get("neighborhood") or "Golden Gate Park",
         "lat": event["lat"],
         "lng": event["lng"],
         "starts_at": event["starts_at"],

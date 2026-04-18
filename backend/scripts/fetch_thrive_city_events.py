@@ -166,6 +166,7 @@ def build_row(event: dict, classification: dict) -> dict:
         "emoji": classification.get("emoji") or None,
         "description": classification.get("description") or None,
         "address": event["address"],
+        "neighborhood": "Mission Bay",
         "lat": event["lat"],
         "lng": event["lng"],
         "starts_at": event["starts_at"],

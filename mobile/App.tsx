@@ -15,6 +15,7 @@ import {
 } from "react-native";
 import { Event, fetchEvents } from "./src/api";
 import { EventCard } from "./src/components/EventCard";
+import { EventDetail } from "./src/components/EventDetail";
 
 type TimeFilter = "now" | "soon" | "weekend" | "upcoming" | "saved";
 
@@ -81,6 +82,7 @@ export default function App() {
   const [loading, setLoading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
 
   // Load favorites from storage
   useEffect(() => {
@@ -268,6 +270,7 @@ export default function App() {
               event={item}
               isFavorite={favoriteIds.has(item.id)}
               onToggleFavorite={toggleFavorite}
+              onPress={setSelectedEvent}
             />
           )}
           renderSectionHeader={({ section: { title } }) => (
@@ -276,6 +279,7 @@ export default function App() {
             </View>
           )}
           contentContainerStyle={styles.list}
+          style={{ backgroundColor: "#FFF" }}
           refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => load(true)} />}
           ListEmptyComponent={
             <View style={styles.emptyContainer}>
@@ -289,6 +293,7 @@ export default function App() {
         />
       )}
       </View>
+      <EventDetail event={selectedEvent} onClose={() => setSelectedEvent(null)} />
     </SafeAreaView>
   );
 }
@@ -322,7 +327,7 @@ const styles = StyleSheet.create({
   sectionHeader: { backgroundColor: "#FAFAFA", paddingHorizontal: 16, paddingTop: 12, paddingBottom: 4 },
   sectionHeaderText: { fontSize: 13, fontWeight: "700", color: "#888", textTransform: "uppercase", letterSpacing: 0.8 },
 
-  list: { paddingHorizontal: 16, paddingBottom: 32 },
+  list: { paddingBottom: 32 },
   emptyContainer: { alignItems: "center", marginTop: 60, paddingHorizontal: 32 },
   emptyEmoji: { fontSize: 40, marginBottom: 12 },
   emptyTitle: { fontSize: 16, fontWeight: "600", color: "#555", textAlign: "center", marginBottom: 6 },

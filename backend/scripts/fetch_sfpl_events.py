@@ -122,7 +122,7 @@ def fetch_page(page: int) -> list[dict]:
     resp = requests.get(
         f"{SFPL_BASE_URL}/events",
         params={"page": page},
-        headers={"User-Agent": "Mozilla/5.0"},
+        headers={"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"},
         timeout=15,
     )
     resp.raise_for_status()
@@ -259,6 +259,7 @@ def build_row(event: dict, classification: dict) -> dict:
         "name": event["name"],
         "description": classification.get("description") or event.get("description") or None,
         "address": event["address"],
+        "neighborhood": event.get("sfpl_branch") or None,
         "lat": event.get("lat"),
         "lng": event.get("lng"),
         "starts_at": event["starts_at"],

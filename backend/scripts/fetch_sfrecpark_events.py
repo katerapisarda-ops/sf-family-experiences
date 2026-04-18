@@ -77,6 +77,7 @@ Respond ONLY with valid JSON:
   "skip_reason": "only if include=false",
   "description": "1-2 sentence description (only if include=true)",
   "emoji": "single emoji that best represents this specific activity (only if include=true)",
+  "neighborhood": "SF neighborhood based on the location (e.g. 'Glen Park', 'Mission', 'Sunset', 'Noe Valley')",
   "interest_tags": [...],
   "vibe_tags": [...],
   "best_age_range": [...],
@@ -89,7 +90,7 @@ Respond ONLY with valid JSON:
 def fetch_movie_detail(detail_url: str) -> str:
     """Fetch the event detail page and return description including movie title/rating."""
     try:
-        resp = requests.get(detail_url, headers={"User-Agent": "Mozilla/5.0"}, timeout=10)
+        resp = requests.get(detail_url, headers={"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"}, timeout=10)
         soup = BeautifulSoup(resp.text, "lxml")
         desc_el = soup.select_one("[itemprop='description']")
         if desc_el:
@@ -120,7 +121,7 @@ def fetch_events(days_ahead: int) -> list[dict]:
         resp = requests.get(
             CALENDAR_URL,
             params={"view": "list", "month": month, "year": year},
-            headers={"User-Agent": "Mozilla/5.0"},
+            headers={"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"},
             timeout=15,
         )
         resp.raise_for_status()
@@ -249,6 +250,7 @@ def build_row(event: dict, cl: dict) -> dict:
         "emoji": cl.get("emoji") or None,
         "description": cl.get("description") or None,
         "address": event["address"],
+        "neighborhood": cl.get("neighborhood") or None,
         "lat": event.get("lat"),
         "lng": event.get("lng"),
         "starts_at": event["starts_at"],

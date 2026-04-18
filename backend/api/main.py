@@ -46,6 +46,7 @@ class Event(BaseModel):
     emoji: Optional[str] = None
     description: Optional[str] = None
     address: Optional[str] = None
+    neighborhood: Optional[str] = None
     lat: Optional[float] = None
     lng: Optional[float] = None
     starts_at: str
@@ -173,7 +174,7 @@ def get_events(
 
     result = (
         db.table("events")
-        .select("id,name,emoji,description,address,lat,lng,starts_at,ends_at,source,source_url,interest_tags,vibe_tags,best_age_range,cost_tier,indoor_outdoor,weather_sensitivity")
+        .select("id,name,emoji,description,address,neighborhood,lat,lng,starts_at,ends_at,source,source_url,interest_tags,vibe_tags,best_age_range,cost_tier,indoor_outdoor,weather_sensitivity")
         .eq("status", "approved")
         .gte("starts_at", now.isoformat())
         .lte("starts_at", window_end.isoformat())
@@ -223,6 +224,7 @@ def get_events(
             emoji=row.get("emoji"),
             description=row.get("description"),
             address=row.get("address"),
+            neighborhood=row.get("neighborhood"),
             lat=event_lat,
             lng=event_lng,
             starts_at=row["starts_at"],

@@ -119,7 +119,7 @@ def fetch_events(days_ahead: int) -> list[dict]:
     ]
 
     for url in urls:
-        resp = requests.get(url, headers={"User-Agent": "Mozilla/5.0"}, timeout=15)
+        resp = requests.get(url, headers={"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"}, timeout=15)
         resp.raise_for_status()
         soup = BeautifulSoup(resp.text, "lxml")
 
@@ -222,6 +222,7 @@ def build_row(event: dict, cl: dict) -> dict:
         "emoji": cl.get("emoji") or None,
         "description": cl.get("description") or None,
         "address": event["address"],
+        "neighborhood": "Cole Valley",
         "lat": event["lat"],
         "lng": event["lng"],
         "starts_at": event["starts_at"],

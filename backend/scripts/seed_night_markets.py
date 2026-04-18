@@ -43,7 +43,7 @@ def nth_weekday(year: int, month: int, n: int, weekday: int) -> date:
 
 def make_row(name: str, slug: str, d: date, start_time: str, end_time: str,
              address: str, lat: float, lng: float, description: str,
-             source_url: str = "") -> dict:
+             neighborhood: str = "", source_url: str = "") -> dict:
     source_id = f"night-market-{slug}-{d.isoformat()}"
     return {
         "source": "night_market",
@@ -52,6 +52,7 @@ def make_row(name: str, slug: str, d: date, start_time: str, end_time: str,
         "name": name,
         "description": description,
         "address": address,
+        "neighborhood": neighborhood,
         "lat": lat,
         "lng": lng,
         "starts_at": f"{d.isoformat()}T{start_time}:00{SF_TZ_OFFSET}",
@@ -78,6 +79,7 @@ def generate_rows(weeks: int) -> list[dict]:
                 d=occurrence,
                 start_time="17:00", end_time="21:00",
                 address="18th Street, Castro, San Francisco, CA 94114",
+                neighborhood="Castro",
                 lat=37.7610, lng=-122.4348,
                 description="Monthly night market on 18th Street in the Castro — queer-owned vendors, local food, artisan goods, and live music in a lively outdoor setting.",
             ))
@@ -98,6 +100,7 @@ def generate_rows(weeks: int) -> list[dict]:
                 d=occurrence,
                 start_time="17:00", end_time="21:00",
                 address="Fort Mason Center, Marina Blvd, San Francisco, CA 94123",
+                neighborhood="Marina",
                 lat=37.8065, lng=-122.4322,
                 description="Monthly night market at Fort Mason with 100+ local makers, 15+ food trucks, and live entertainment curated by Stern Grove Festival.",
                 source_url="https://fortmason.org",
@@ -118,6 +121,7 @@ def generate_rows(weeks: int) -> list[dict]:
                 d=d,
                 start_time="17:00", end_time="21:00",
                 address="Irving Street, Inner Sunset, San Francisco, CA 94122",
+                neighborhood="Inner Sunset",
                 lat=37.7634, lng=-122.4692,
                 description=description,
             ))
@@ -138,6 +142,7 @@ def generate_rows(weeks: int) -> list[dict]:
                 d=d,
                 start_time="16:00", end_time="21:00",
                 address="Cole Street (between Carl & Parnassus Ave), Cole Valley, San Francisco, CA 94117",
+                neighborhood="Cole Valley",
                 lat=37.7671, lng=-122.4488,
                 description=description,
             ))
@@ -154,6 +159,7 @@ def generate_rows(weeks: int) -> list[dict]:
                 d=d,
                 start_time="16:00", end_time="20:00",
                 address="Clement Street (22nd–25th Ave), Richmond District, San Francisco, CA 94121",
+                neighborhood="Richmond",
                 lat=37.7823, lng=-122.4793,
                 description="Family-friendly night market on Clement Street in the Richmond District with food, shopping, live entertainment, and activities for kids.",
             ))

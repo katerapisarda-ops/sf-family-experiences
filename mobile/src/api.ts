@@ -6,6 +6,7 @@ export interface Event {
   emoji?: string;
   description?: string;
   address?: string;
+  neighborhood?: string;
   lat?: number;
   lng?: number;
   starts_at: string;
