@@ -21,6 +21,7 @@ SUPABASE_SERVICE_KEY = os.environ["SUPABASE_SERVICE_KEY"]
 SF_TZ_OFFSET = "-07:00"
 
 TAGS = {
+    "emoji": "🏮",
     "interest_tags": ["food", "community", "music"],
     "vibe_tags": ["social", "foodie", "cultural"],
     "best_age_range": ["Toddler (1-3)", "Preschool (3-5)", "Older Kids (6-9)", "All Ages"],

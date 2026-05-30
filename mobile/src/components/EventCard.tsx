@@ -1,12 +1,15 @@
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { Event } from "../api";
 
-const STATUS_COLORS: Record<string, string> = {
-  now: "#E8F5E9",
-  soon: "#FFF8E1",
-  weekend: "#E3F2FD",
-  upcoming: "#F0F4FF",
-};
+
+function decodeEntities(str: string): string {
+  return str
+    .replace(/&#8217;/g, "'").replace(/&#8216;/g, "'")
+    .replace(/&#8220;/g, '"').replace(/&#8221;/g, '"')
+    .replace(/&#8211;/g, '–').replace(/&#8212;/g, '—')
+    .replace(/&amp;/g, '&').replace(/&nbsp;/g, ' ')
+    .replace(/&#\d+;/g, '');
+}
 
 function formatTime(iso: string): string {
   try {
@@ -45,7 +48,6 @@ interface Props {
 }
 
 export function EventCard({ event, isFavorite, onToggleFavorite, onPress }: Props) {
-  const emojiBg = STATUS_COLORS[event.time_status] ?? STATUS_COLORS.upcoming;
 
   const metaParts: string[] = [];
   if (event.neighborhood) metaParts.push(event.neighborhood);
@@ -59,17 +61,14 @@ export function EventCard({ event, isFavorite, onToggleFavorite, onPress }: Prop
       {/* Time */}
       <Text style={styles.time}>{formatTime(event.starts_at)}</Text>
 
-      {/* Middle: name + meta */}
+      {/* Middle: emoji + name + meta */}
       <View style={styles.middle}>
-        <Text style={styles.name} numberOfLines={2}>{event.name}</Text>
+        <Text style={styles.name} numberOfLines={2}>
+          {event.emoji ? `${event.emoji} ${decodeEntities(event.name)}` : decodeEntities(event.name)}
+        </Text>
         {metaParts.length > 0 && (
           <Text style={styles.meta} numberOfLines={1}>{metaParts.join(" · ")}</Text>
         )}
-      </View>
-
-      {/* Emoji thumbnail */}
-      <View style={[styles.thumb, { backgroundColor: emojiBg }]}>
-        {event.emoji ? <Text style={styles.thumbEmoji}>{event.emoji}</Text> : null}
       </View>
 
       {/* Heart */}
@@ -97,7 +96,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: "600",
     color: "#1E88E5",
-    width: 52,
+    width: 68,
     flexShrink: 0,
   },
   middle: {
@@ -112,17 +111,6 @@ const styles = StyleSheet.create({
   meta: {
     fontSize: 12,
     color: "#888",
-  },
-  thumb: {
-    width: 44,
-    height: 44,
-    borderRadius: 10,
-    alignItems: "center",
-    justifyContent: "center",
-    flexShrink: 0,
-  },
-  thumbEmoji: {
-    fontSize: 22,
   },
   heartBtn: {
     flexShrink: 0,

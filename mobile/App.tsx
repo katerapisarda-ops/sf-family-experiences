@@ -182,7 +182,7 @@ export default function App() {
       {/* Time tabs */}
       <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.tabsScroll} contentContainerStyle={styles.tabs}>
         {TIME_TABS.map((tab) => {
-          const count = tab.key === "saved" ? favoriteIds.size : tabCounts[tab.key];
+          const count = tab.key === "saved" ? allEvents.filter((e) => favoriteIds.has(e.id)).length : tabCounts[tab.key];
           const isActive = timeFilter === tab.key;
           return (
             <TouchableOpacity

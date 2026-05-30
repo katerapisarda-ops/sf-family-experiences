@@ -36,6 +36,15 @@ function formatDate(iso: string): string {
   }
 }
 
+function decodeEntities(str: string): string {
+  return str
+    .replace(/&#8217;/g, "'").replace(/&#8216;/g, "'")
+    .replace(/&#8220;/g, '"').replace(/&#8221;/g, '"')
+    .replace(/&#8211;/g, '–').replace(/&#8212;/g, '—')
+    .replace(/&amp;/g, '&').replace(/&nbsp;/g, ' ')
+    .replace(/&#\d+;/g, '');
+}
+
 function cleanAddress(address?: string): string | null {
   if (!address) return null;
   return address
@@ -66,7 +75,7 @@ export function EventDetail({ event, onClose }: Props) {
         <ScrollView contentContainerStyle={styles.body}>
           {/* Emoji + name */}
           <Text style={styles.emoji}>{event.emoji || "📍"}</Text>
-          <Text style={styles.name}>{event.name}</Text>
+          <Text style={styles.name}>{decodeEntities(event.name)}</Text>
 
           {/* Date / time */}
           <Text style={styles.meta}>
@@ -83,7 +92,7 @@ export function EventDetail({ event, onClose }: Props) {
 
           {/* Description */}
           {event.description ? (
-            <Text style={styles.description}>{event.description}</Text>
+            <Text style={styles.description}>{decodeEntities(event.description)}</Text>
           ) : null}
 
           {/* Meta rows */}

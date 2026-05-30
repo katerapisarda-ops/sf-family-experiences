@@ -95,6 +95,7 @@ MARKETS = [
 ]
 
 TAGS = {
+    "emoji": "🥕",
     "interest_tags": ["food", "community"],
     "vibe_tags": ["social", "foodie", "outdoorsy"],
     "best_age_range": ["Baby (0-1)", "Toddler (1-3)", "Preschool (3-5)", "Older Kids (6-9)", "All Ages"],
