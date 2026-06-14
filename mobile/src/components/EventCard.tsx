@@ -69,6 +69,9 @@ export function EventCard({ event, isFavorite, onToggleFavorite, onPress }: Prop
         {metaParts.length > 0 && (
           <Text style={styles.meta} numberOfLines={1}>{metaParts.join(" · ")}</Text>
         )}
+        {event.requires_reservation && (
+          <Text style={styles.reservationBadge} numberOfLines={1}>⚠️ Reservation required</Text>
+        )}
       </View>
 
       {/* Heart */}
@@ -111,6 +114,11 @@ const styles = StyleSheet.create({
   meta: {
     fontSize: 12,
     color: "#888",
+  },
+  reservationBadge: {
+    fontSize: 12,
+    color: "#B45309",
+    marginTop: 2,
   },
   heartBtn: {
     flexShrink: 0,

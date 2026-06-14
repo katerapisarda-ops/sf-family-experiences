@@ -100,6 +100,11 @@ TAXONOMY:
    🎵 music/singing, 🐾 animals, 🔬 science, 🌿 nature, 🍎 food, ⚽ sports, 💃 dance, 🎪 circus/performance,
    🥚 egg hunt, 🎬 movie, 🌊 water, 🧱 building/lego, 🎠 fair/festival, 🌙 night event, 🎤 storytelling
 
+5. RESERVATION — If the description mentions that reservations, registration, sign-up, or a phone call are
+   required, or that space/seating is limited, set requires_reservation=true and write a short reservation_note
+   with the practical details (e.g. phone number, when registration opens). Otherwise requires_reservation=false
+   and reservation_note=null. Plain "drop-in, no registration needed" events are NOT reservation-required.
+
 Respond ONLY with valid JSON:
 {
   "include": true or false,
@@ -113,6 +118,8 @@ Respond ONLY with valid JSON:
   "cost_tier": "free",
   "indoor_outdoor": "indoor",
   "weather_sensitivity": "none",
+  "requires_reservation": true or false,
+  "reservation_note": "short practical note, or null",
   "reasoning": "one sentence why this is worth including (if include=true)"
 }"""
 
@@ -190,6 +197,18 @@ def parse_card(card) -> dict | None:
     }
 
 
+def fetch_description(source_url: str) -> str:
+    """Fetch an event's detail page and return its description text."""
+    try:
+        resp = requests.get(source_url, headers={"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"}, timeout=15)
+        resp.raise_for_status()
+        soup = BeautifulSoup(resp.text, "lxml")
+        el = soup.select_one(".event__content")
+        return el.get_text(" ", strip=True) if el else ""
+    except Exception:
+        return ""
+
+
 def parse_date(text: str):
     """Parse 'Friday, 3/20/2026, 10:00 - 11:00' → (starts_at ISO, ends_at ISO)."""
     if not text:
@@ -229,7 +248,8 @@ def classify(ai_client: anthropic.Anthropic, event: dict) -> dict:
         f"Audience: {audience_str}\n"
         f"Branch: {event.get('sfpl_branch', 'unknown')}\n"
         f"Date: {event.get('starts_at', 'unknown')}\n"
-        f"Topics: {topics_str}"
+        f"Topics: {topics_str}\n"
+        f"Description: {event.get('description', '')[:600]}"
     )
     msg = ai_client.messages.create(
         model="claude-haiku-4-5-20251001",
@@ -274,6 +294,8 @@ def build_row(event: dict, classification: dict) -> dict:
         "cost_tier": "free",
         "indoor_outdoor": "indoor",
         "weather_sensitivity": "none",
+        "requires_reservation": classification.get("requires_reservation") or False,
+        "reservation_note": classification.get("reservation_note") or None,
         "kid_friendly": True,
         "status": "pending_review",
         "ai_confidence": classification.get("confidence"),
@@ -366,6 +388,11 @@ def main():
     pre_skipped = len(valid) - len(pre_filtered)
     if pre_skipped:
         print(f"Pre-filtered {pre_skipped} obvious skips (storytime, adult services, etc.)")
+
+    print(f"\nFetching event descriptions for {len(pre_filtered)} events...")
+    for event in pre_filtered:
+        event["description"] = fetch_description(event["source_url"])
+        time.sleep(0.3)  # be polite to SFPL
 
     print(f"\nClassifying {len(pre_filtered)} events with Claude Haiku...\n")
     valid = pre_filtered

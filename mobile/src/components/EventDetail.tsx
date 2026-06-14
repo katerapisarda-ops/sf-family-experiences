@@ -90,6 +90,15 @@ export function EventDetail({ event, onClose }: Props) {
             </Text>
           ) : null}
 
+          {/* Reservation notice */}
+          {event.requires_reservation ? (
+            <View style={styles.reservationBox}>
+              <Text style={styles.reservationText}>
+                ⚠️ Reservation required{event.reservation_note ? ` — ${decodeEntities(event.reservation_note)}` : ""}
+              </Text>
+            </View>
+          ) : null}
+
           {/* Description */}
           {event.description ? (
             <Text style={styles.description}>{decodeEntities(event.description)}</Text>
@@ -154,6 +163,14 @@ const styles = StyleSheet.create({
   meta: { fontSize: 14, color: "#555", marginBottom: 6 },
   address: { fontSize: 14, color: "#555", marginBottom: 16 },
   description: { fontSize: 15, color: "#333", lineHeight: 22, marginBottom: 20 },
+
+  reservationBox: {
+    backgroundColor: "#FFF7ED",
+    borderRadius: 8,
+    padding: 12,
+    marginBottom: 16,
+  },
+  reservationText: { fontSize: 14, color: "#9A3412", fontWeight: "500" },
 
   metaSection: {
     marginBottom: 24,

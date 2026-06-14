@@ -93,6 +93,10 @@ TAXONOMY:
    - Be specific about what kids will do and what makes it special
    - Avoid generic filler
 
+4. RESERVATION — If the description mentions reservations, registration, sign-up, tickets required, or
+   limited/reserved space, set requires_reservation=true and write a brief reservation_note with practical
+   details. Otherwise requires_reservation=false and reservation_note=null.
+
 Respond ONLY with valid JSON:
 {
   "include": true or false,
@@ -104,7 +108,9 @@ Respond ONLY with valid JSON:
   "best_age_range": [...],
   "cost_tier": "free" or "paid",
   "indoor_outdoor": "outdoor",
-  "weather_sensitivity": "soft_avoid_rain"
+  "weather_sensitivity": "soft_avoid_rain",
+  "requires_reservation": true or false,
+  "reservation_note": "short practical note, or null"
 }"""
 
 MONTH_MAP = {
@@ -304,6 +310,8 @@ def build_row(event: dict, cl: dict) -> dict:
         "cost_tier": cl.get("cost_tier", "free"),
         "indoor_outdoor": cl.get("indoor_outdoor", "outdoor"),
         "weather_sensitivity": cl.get("weather_sensitivity", "soft_avoid_rain"),
+        "requires_reservation": cl.get("requires_reservation") or False,
+        "reservation_note": cl.get("reservation_note") or None,
         "kid_friendly": True,
         "status": "pending_review",
         "ai_confidence": cl.get("confidence"),

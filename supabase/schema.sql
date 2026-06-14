@@ -122,6 +122,8 @@ create table events (
   cost_tier             text,
   indoor_outdoor        text,
   weather_sensitivity   text,
+  requires_reservation  boolean default false,
+  reservation_note      text,                    -- e.g. "Reservations required: (415) 355-2818, starting June 13"
 
   -- Boolean attributes
   has_restroom          boolean,

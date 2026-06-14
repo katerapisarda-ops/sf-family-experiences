@@ -180,6 +180,8 @@ def build_row(event: dict, classification: dict) -> dict:
         "cost_tier": classification.get("cost_tier", "free"),
         "indoor_outdoor": "outdoor",
         "weather_sensitivity": "soft_avoid_rain",
+        "requires_reservation": False,
+        "reservation_note": None,
         "kid_friendly": True,
         "status": "pending_review",
         "ai_confidence": classification.get("confidence"),

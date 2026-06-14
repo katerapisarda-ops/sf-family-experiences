@@ -16,14 +16,14 @@ python3 backend/scripts/cleanup_events.py
 
 echo ""
 echo "Step 2/3 — Fetching new events from all sources..."
-python3 backend/scripts/fetch_sfpl_events.py --days-ahead 7
-python3 backend/scripts/fetch_randall_events.py --days-ahead 14
-python3 backend/scripts/fetch_presidio_events.py --days-ahead 14
-python3 backend/scripts/fetch_fort_mason_events.py --days-ahead 14
-python3 backend/scripts/fetch_sfzoo_events.py --days-ahead 14
-python3 backend/scripts/fetch_ybg_events.py --days-ahead 14
+python3 backend/scripts/fetch_sfpl_events.py --days-ahead 17
+python3 backend/scripts/fetch_randall_events.py --days-ahead 17
+python3 backend/scripts/fetch_presidio_events.py --days-ahead 17
+python3 backend/scripts/fetch_fort_mason_events.py --days-ahead 17
+python3 backend/scripts/fetch_sfzoo_events.py --days-ahead 17
+python3 backend/scripts/fetch_ybg_events.py --days-ahead 17
 python3 backend/scripts/fetch_thrive_city_events.py
-python3 backend/scripts/fetch_sfrecpark_events.py --days-ahead 14
+python3 backend/scripts/fetch_sfrecpark_events.py --days-ahead 17
 
 echo ""
 echo "Step 3/3 — Refreshing recurring seeds (farmers markets + night markets)..."

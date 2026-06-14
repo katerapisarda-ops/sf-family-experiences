@@ -59,6 +59,8 @@ class Event(BaseModel):
     cost_tier: Optional[str] = None
     indoor_outdoor: Optional[str] = None
     weather_sensitivity: Optional[str] = None
+    requires_reservation: bool = False
+    reservation_note: Optional[str] = None
     time_status: str  # "now" | "soon" | "weekend" | "upcoming"
     distance_miles: Optional[float] = None
 
@@ -168,13 +170,19 @@ def get_events(
     lng: Optional[float] = Query(None, description="User longitude"),
     max_distance: Optional[float] = Query(None, description="Max distance in miles from user location"),
 ):
-    # Fetch approved events within the next 7 days
+    # Fetch approved events through the end of the second upcoming weekend
     now = datetime.now(SF_TZ)
-    window_end = now + timedelta(days=7)
+    wd = now.weekday()  # Mon=0 … Sun=6
+    if wd <= 3:  # Mon–Thu: upcoming Friday
+        friday = (now + timedelta(days=(4 - wd))).date()
+    else:  # Fri–Sun: current weekend's Friday
+        friday = (now - timedelta(days=(wd - 4))).date()
+    second_weekend_sunday = friday + timedelta(days=2 + 7)
+    window_end = datetime.combine(second_weekend_sunday, datetime.max.time(), tzinfo=SF_TZ)
 
     result = (
         db.table("events")
-        .select("id,name,emoji,description,address,neighborhood,lat,lng,starts_at,ends_at,source,source_url,interest_tags,vibe_tags,best_age_range,cost_tier,indoor_outdoor,weather_sensitivity")
+        .select("id,name,emoji,description,address,neighborhood,lat,lng,starts_at,ends_at,source,source_url,interest_tags,vibe_tags,best_age_range,cost_tier,indoor_outdoor,weather_sensitivity,requires_reservation,reservation_note")
         .eq("status", "approved")
         .gte("starts_at", now.isoformat())
         .lte("starts_at", window_end.isoformat())
@@ -237,6 +245,8 @@ def get_events(
             cost_tier=row.get("cost_tier"),
             indoor_outdoor=row.get("indoor_outdoor"),
             weather_sensitivity=row.get("weather_sensitivity"),
+            requires_reservation=row.get("requires_reservation") or False,
+            reservation_note=row.get("reservation_note"),
             time_status=status,
             distance_miles=distance,
         ))

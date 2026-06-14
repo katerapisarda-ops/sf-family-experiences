@@ -52,6 +52,10 @@ For the description:
 - Example: "Free Easter egg hunt on the Great Lawn at Yerba Buena Gardens — kids of all ages search for eggs in a festive outdoor setting in the heart of SoMa."
 - Avoid generic filler
 
+RESERVATION — If the description mentions reservations, registration, sign-up, tickets required, or
+limited/reserved space, set requires_reservation=true and write a brief reservation_note with practical
+details. Otherwise requires_reservation=false and reservation_note=null.
+
 Respond ONLY with valid JSON:
 {
   "include": true or false,
@@ -63,7 +67,9 @@ Respond ONLY with valid JSON:
   "best_age_range": [...],
   "cost_tier": "free",
   "indoor_outdoor": "outdoor",
-  "weather_sensitivity": "soft_avoid_rain"
+  "weather_sensitivity": "soft_avoid_rain",
+  "requires_reservation": true or false,
+  "reservation_note": "short practical note, or null"
 }"""
 
 
@@ -209,6 +215,8 @@ def build_row(event: dict, cl: dict) -> dict:
         "cost_tier": event.get("cost_tier", "free"),
         "indoor_outdoor": "outdoor",
         "weather_sensitivity": "soft_avoid_rain",
+        "requires_reservation": cl.get("requires_reservation") or False,
+        "reservation_note": cl.get("reservation_note") or None,
         "kid_friendly": True,
         "status": "pending_review",
         "ai_confidence": 1.0,

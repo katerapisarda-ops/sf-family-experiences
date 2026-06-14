@@ -53,6 +53,10 @@ For the description:
 - Example: "Kids get up-close time with one of Randall Museum's live animal ambassadors — snakes, owls, and other wildlife residents of the museum."
 - Avoid generic filler like "a fun event for the whole family"
 
+RESERVATION — If the description mentions reservations, registration, sign-up, tickets required, or
+limited/reserved space, set requires_reservation=true and write a brief reservation_note with practical
+details. Otherwise requires_reservation=false and reservation_note=null.
+
 Respond ONLY with valid JSON:
 {
   "description": "1-2 sentence parent-friendly description",
@@ -62,7 +66,9 @@ Respond ONLY with valid JSON:
   "best_age_range": [...],
   "cost_tier": "free" or "paid",
   "indoor_outdoor": "indoor",
-  "weather_sensitivity": "none"
+  "weather_sensitivity": "none",
+  "requires_reservation": true or false,
+  "reservation_note": "short practical note, or null"
 }"""
 
 
@@ -120,6 +126,9 @@ def fetch_events(days_ahead: int) -> list[dict]:
 
     for url in urls:
         resp = requests.get(url, headers={"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"}, timeout=15)
+        if resp.status_code == 404:
+            # Pagination URL no longer exists on the site; stop here.
+            break
         resp.raise_for_status()
         soup = BeautifulSoup(resp.text, "lxml")
 
@@ -236,6 +245,8 @@ def build_row(event: dict, cl: dict) -> dict:
         "cost_tier": cl.get("cost_tier", "paid"),
         "indoor_outdoor": cl.get("indoor_outdoor", "indoor"),
         "weather_sensitivity": cl.get("weather_sensitivity", "none"),
+        "requires_reservation": cl.get("requires_reservation") or False,
+        "reservation_note": cl.get("reservation_note") or None,
         "kid_friendly": True,
         "status": "pending_review",
         "ai_confidence": 1.0,

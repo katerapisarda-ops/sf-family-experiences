@@ -55,6 +55,10 @@ For the description:
 - Be specific about what kids will do and what makes this event special beyond a regular zoo visit
 - Example: "Kids bring their stuffed animals to the Zoo for a fun pretend veterinary clinic — a sweet way to learn about animal care while exploring the grounds."
 
+RESERVATION — If the description mentions reservations, registration, sign-up, tickets required, or
+limited/reserved space, set requires_reservation=true and write a brief reservation_note with practical
+details. Otherwise requires_reservation=false and reservation_note=null.
+
 Respond ONLY with valid JSON:
 {
   "description": "1-2 sentence parent-friendly description",
@@ -64,7 +68,9 @@ Respond ONLY with valid JSON:
   "best_age_range": [...],
   "cost_tier": "free" or "paid",
   "indoor_outdoor": "outdoor",
-  "weather_sensitivity": "soft_avoid_rain"
+  "weather_sensitivity": "soft_avoid_rain",
+  "requires_reservation": true or false,
+  "reservation_note": "short practical note, or null"
 }"""
 
 
@@ -128,25 +134,28 @@ def classify(ai_client: anthropic.Anthropic, event: dict) -> dict:
         f"Cost: {event.get('cost') or 'included with admission'}\n"
         f"Description: {event.get('raw_description', '')}"
     )
-    msg = ai_client.messages.create(
-        model="claude-haiku-4-5-20251001",
-        max_tokens=512,
-        system=SYSTEM_PROMPT,
-        messages=[{"role": "user", "content": prompt}],
-    )
-    raw = msg.content[0].text.strip()
-    if raw.startswith("```"):
-        raw = raw.split("```")[1]
-        if raw.startswith("json"):
-            raw = raw[4:]
-    raw = raw.strip()
-    try:
-        return json.loads(raw)
-    except json.JSONDecodeError:
-        start, end = raw.find("{"), raw.rfind("}") + 1
-        if start >= 0 and end > start:
-            return json.loads(raw[start:end])
-        raise
+    for attempt in range(2):
+        msg = ai_client.messages.create(
+            model="claude-haiku-4-5-20251001",
+            max_tokens=512,
+            system=SYSTEM_PROMPT,
+            messages=[{"role": "user", "content": prompt}],
+        )
+        raw = msg.content[0].text.strip()
+        if raw.startswith("```"):
+            raw = raw.split("```")[1]
+            if raw.startswith("json"):
+                raw = raw[4:]
+        raw = raw.strip()
+        try:
+            return json.loads(raw)
+        except json.JSONDecodeError:
+            start, end = raw.find("{"), raw.rfind("}") + 1
+            if start >= 0 and end > start:
+                return json.loads(raw[start:end])
+            if attempt == 0:
+                continue
+            return {"emoji": None, "description": None, "interest_tags": []}
 
 
 def build_row(event: dict, cl: dict) -> dict:
@@ -169,6 +178,8 @@ def build_row(event: dict, cl: dict) -> dict:
         "cost_tier": event["cost_tier"],
         "indoor_outdoor": cl.get("indoor_outdoor", "outdoor"),
         "weather_sensitivity": cl.get("weather_sensitivity", "soft_avoid_rain"),
+        "requires_reservation": cl.get("requires_reservation") or False,
+        "reservation_note": cl.get("reservation_note") or None,
         "kid_friendly": True,
         "status": "pending_review",
         "ai_confidence": 1.0,

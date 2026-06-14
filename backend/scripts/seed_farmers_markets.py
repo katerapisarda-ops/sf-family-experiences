@@ -65,7 +65,7 @@ MARKETS = [
         "neighborhood": "Inner Richmond",
         "lat": 37.7830,
         "lng": -122.4628,
-        "source_url": "https://sffarmersmarkets.org",
+        "source_url": "https://www.sfenvironment.org/farmers-markets-in-sf",
         "seasonal_months": None,
     },
     {
@@ -77,7 +77,7 @@ MARKETS = [
         "neighborhood": "NoPa",
         "lat": 37.7726,
         "lng": -122.4376,
-        "source_url": "https://sffarmersmarkets.org",
+        "source_url": "https://www.sfenvironment.org/farmers-markets-in-sf",
         "seasonal_months": None,
     },
     {
@@ -89,7 +89,7 @@ MARKETS = [
         "neighborhood": "Marina",
         "lat": 37.8065,
         "lng": -122.4322,
-        "source_url": "https://sffarmersmarkets.org",
+        "source_url": "https://www.sfenvironment.org/farmers-markets-in-sf",
         "seasonal_months": None,
     },
 ]

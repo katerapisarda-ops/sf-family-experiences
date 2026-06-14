@@ -85,6 +85,13 @@ export interface components {
             indoor_outdoor?: string | null;
             /** Weather Sensitivity */
             weather_sensitivity?: string | null;
+            /**
+             * Requires Reservation
+             * @default false
+             */
+            requires_reservation: boolean;
+            /** Reservation Note */
+            reservation_note?: string | null;
             /** Time Status */
             time_status: string;
         };
