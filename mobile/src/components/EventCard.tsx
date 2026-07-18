@@ -23,6 +23,28 @@ function formatTime(iso: string): string {
   }
 }
 
+function formatShortDate(iso: string): string {
+  try {
+    return new Date(iso).toLocaleDateString("en-US", {
+      weekday: "short",
+      month: "numeric",
+      day: "numeric",
+      timeZone: "America/Los_Angeles",
+    }).replace(",", "");
+  } catch {
+    return "";
+  }
+}
+
+const REGION_LABELS: Record<string, string> = {
+  east_bay: "East Bay",
+  marin: "Marin",
+  peninsula: "Peninsula",
+  south_bay: "South Bay",
+  north_bay: "North Bay",
+  coastal: "Coast",
+};
+
 const AGE_ORDER = ["baby", "toddler", "preschool", "older kid"];
 const AGE_LOW: Record<string, string> = { "baby": "0", "toddler": "1", "preschool": "3", "older kid": "6" };
 const AGE_HIGH: Record<string, string> = { "baby": "1", "toddler": "3", "preschool": "5", "older kid": "+" };
@@ -45,11 +67,15 @@ interface Props {
   isFavorite: boolean;
   onToggleFavorite: (id: string) => void;
   onPress: (event: Event) => void;
+  /** Show the date in the time column — used in the multi-day "Worth the trip" section */
+  showDate?: boolean;
 }
 
-export function EventCard({ event, isFavorite, onToggleFavorite, onPress }: Props) {
+export function EventCard({ event, isFavorite, onToggleFavorite, onPress, showDate }: Props) {
 
+  const regionLabel = event.region && event.region !== "sf" ? REGION_LABELS[event.region] : null;
   const metaParts: string[] = [];
+  if (regionLabel) metaParts.push(`🚗 ${regionLabel}`);
   if (event.neighborhood) metaParts.push(event.neighborhood);
   if (event.cost_tier === "free") metaParts.push("Free");
   else if (event.cost_tier) metaParts.push(event.cost_tier);
@@ -58,8 +84,11 @@ export function EventCard({ event, isFavorite, onToggleFavorite, onPress }: Prop
 
   return (
     <TouchableOpacity style={styles.row} onPress={() => onPress(event)} activeOpacity={0.7}>
-      {/* Time */}
-      <Text style={styles.time}>{formatTime(event.starts_at)}</Text>
+      {/* Time (with date in multi-day sections) */}
+      <View style={styles.timeCol}>
+        {showDate && <Text style={styles.date}>{formatShortDate(event.starts_at)}</Text>}
+        <Text style={styles.time}>{formatTime(event.starts_at)}</Text>
+      </View>
 
       {/* Middle: emoji + name + meta */}
       <View style={styles.middle}>
@@ -95,12 +124,20 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFF",
     gap: 10,
   },
+  timeCol: {
+    width: 68,
+    flexShrink: 0,
+  },
   time: {
     fontSize: 12,
     fontWeight: "600",
     color: "#1E88E5",
-    width: 68,
-    flexShrink: 0,
+  },
+  date: {
+    fontSize: 11,
+    fontWeight: "700",
+    color: "#555",
+    marginBottom: 1,
   },
   middle: {
     flex: 1,

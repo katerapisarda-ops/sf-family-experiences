@@ -43,6 +43,22 @@ const DISTANCE_OPTIONS: { label: string; value: number }[] = [
 
 const FAVORITES_KEY = "little_city_favorites";
 
+export const REGION_LABELS: Record<string, string> = {
+  east_bay: "East Bay",
+  marin: "Marin",
+  peninsula: "Peninsula",
+  south_bay: "South Bay",
+  north_bay: "North Bay",
+  coastal: "Coast",
+};
+
+const TRIP_SECTION_TITLE = "🚗 Worth the trip";
+const MAX_TRIP_SLOTS = 3;
+
+function isDayTrip(e: Event): boolean {
+  return !!e.region && e.region !== "sf";
+}
+
 function dayLabel(iso: string): string {
   const d = new Date(iso);
   const today = new Date();
@@ -67,6 +83,15 @@ function groupByDay(events: Event[]): { title: string; data: Event[] }[] {
     groups[label].push(e);
   }
   return Object.entries(groups).map(([title, data]) => ({ title, data }));
+}
+
+/** Day-grouped SF events, then a capped "Worth the trip" section for regional events. */
+function buildSections(events: Event[], tripCap: number): { title: string; data: Event[] }[] {
+  const local = events.filter((e) => !isDayTrip(e));
+  const trips = events.filter(isDayTrip).slice(0, tripCap);
+  const sections = groupByDay(local);
+  if (trips.length > 0) sections.push({ title: TRIP_SECTION_TITLE, data: trips });
+  return sections;
 }
 
 export default function App() {
@@ -153,7 +178,8 @@ export default function App() {
     ? allEvents.filter((e) => favoriteIds.has(e.id))
     : events;
 
-  const sections = groupByDay(displayEvents);
+  // Saved tab: no cap — show every saved day trip
+  const sections = buildSections(displayEvents, timeFilter === "saved" ? Infinity : MAX_TRIP_SLOTS);
 
   const emptyTitles: Record<TimeFilter, string> = {
     now: "Nothing happening right now",
@@ -265,12 +291,13 @@ export default function App() {
         <SectionList
           sections={sections}
           keyExtractor={(e) => e.id}
-          renderItem={({ item }) => (
+          renderItem={({ item, section }) => (
             <EventCard
               event={item}
               isFavorite={favoriteIds.has(item.id)}
               onToggleFavorite={toggleFavorite}
               onPress={setSelectedEvent}
+              showDate={section.title === TRIP_SECTION_TITLE}
             />
           )}
           renderSectionHeader={({ section: { title } }) => (

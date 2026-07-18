@@ -55,4 +55,10 @@ else:
     print("  Already patched, skipping")
 PYEOF
 
+echo "Restoring Vercel project link (expo export wipes dist/)..."
+mkdir -p "$DIST/.vercel"
+cat > "$DIST/.vercel/project.json" <<'EOF'
+{"projectId":"prj_bFMJb6ubU25FPUClzbTdk81u70sv","orgId":"team_dYHj0FNTi7AUrsT5CTKOmNYe","projectName":"littlecity"}
+EOF
+
 echo "PWA patch complete. Ready to deploy: cd dist && vercel --prod"
