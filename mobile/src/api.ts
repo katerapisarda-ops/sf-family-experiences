@@ -7,6 +7,7 @@ export interface Event {
   description?: string;
   address?: string;
   neighborhood?: string;
+  region?: "sf" | "east_bay" | "marin" | "peninsula" | "south_bay" | "north_bay" | "coastal";
   lat?: number;
   lng?: number;
   starts_at: string;

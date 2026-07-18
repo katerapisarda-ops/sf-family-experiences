@@ -125,11 +125,19 @@ def fetch_events(days_ahead: int) -> list[dict]:
     ]
 
     for url in urls:
-        resp = requests.get(url, headers={"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"}, timeout=15)
+        try:
+            resp = requests.get(url, headers={"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"}, timeout=15)
+        except requests.RequestException as e:
+            # Site is down (SSL errors, timeouts, DNS) — don't kill the whole refresh pipeline.
+            print(f"  ⚠ WARNING: randallmuseum.org unreachable ({type(e).__name__}) — check the site manually")
+            break
         if resp.status_code == 404:
             # Pagination URL no longer exists on the site; stop here.
             break
-        resp.raise_for_status()
+        if resp.status_code != 200 or "Site Unavailable" in resp.text[:2000]:
+            # Site is down or rate-limiting — don't kill the whole refresh pipeline.
+            print(f"  ⚠ WARNING: randallmuseum.org unavailable (HTTP {resp.status_code}) — check the site manually")
+            break
         soup = BeautifulSoup(resp.text, "lxml")
 
         hit_future = False

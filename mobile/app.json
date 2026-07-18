@@ -24,7 +24,14 @@
       "predictiveBackGestureEnabled": false
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/favicon.png",
+      "name": "Little City",
+      "shortName": "Little City",
+      "description": "Family events in San Francisco",
+      "backgroundColor": "#FAFAFA",
+      "themeColor": "#1E88E5",
+      "display": "standalone",
+      "bundler": "metro"
     }
   }
 }

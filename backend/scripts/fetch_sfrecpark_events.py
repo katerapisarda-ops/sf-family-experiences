@@ -34,24 +34,31 @@ SKIP_KEYWORDS = [
     "committee", "commission meeting", "board meeting", "staff meeting",
     "advisory", "permit", "budget", "public hearing", "workshop for adults",
     "senior", "aarp", "tax prep", "mahjong & mixers",
+    "cycle track",  # facility open/closed notices, not events
 ]
 
 SYSTEM_PROMPT = """You are a quality filter for a curated family activity app in San Francisco.
 You will receive an event from the SF Recreation & Parks calendar.
 
 Your job is TWO things:
-1. QUALITY + FAMILY CHECK — Apply a HIGH bar. Only include if the event is clearly and explicitly designed for young kids or families with young children.
-   - INCLUDE only:
-     * Events with "kids", "family", "children", "youth", "junior", or "Easter" explicitly in the name or description
-     * Named seasonal family festivals (SpringFling, EcoCenter Celebration, Easter at the Beach, etc.)
+1. QUALITY + FAMILY CHECK — Should a busy SF parent with young kids (0-9) know about this?
+   Park events don't need to be explicitly "for kids" to be great family outings — a free daytime
+   concert in Golden Gate Park is a classic family activity even if marketed to everyone.
+   - INCLUDE:
+     * Anything explicitly for kids/families ("kids", "family", "children", "youth", "toddler", "junior")
+     * Named seasonal festivals and celebrations (SpringFling, EcoCenter Celebration, Easter at the Beach, etc.)
+     * Daytime park and bandshell concerts open to all (Golden Gate Park Band, weekend afternoon shows)
+     * Union Square daytime programming families could enjoy together (Sunday Fun Days, Imagination
+       Mondays, juggling lessons, chess lessons, cinema on the square if the film is G/PG)
      * Movie nights — ONLY if the film is rated G or PG. Skip PG-13, R, and NR. If unsure of rating, skip.
-     * Explicitly labeled kids concerts or kids festivals (e.g. "Kids Festival", "Family Concert")
-   - SKIP everything else, including:
-     * General bandshell concerts or park events NOT explicitly for kids/families
-     * Union Square programming unless explicitly for kids
-     * Fitness classes, hobby classes, or adult recreational activities
-     * Cultural performances or concerts with no explicit kids/family angle
-     * Any event where you're not confident young families are the intended audience
+     * Community festivals, cultural celebrations, and outdoor events open to all ages
+   - SKIP:
+     * Adult fitness and wellness classes (tai chi, yoga, Zumba, cardio dance, resistance training)
+     * Adult hobby programming (mahjong lessons, adult sketching, karaoke, blues nights)
+     * Happy hours and evening events aimed at adults
+     * Lunchbreak music aimed at office workers
+     * Facility hours notices, closures, cleanups, and administrative items
+     * Events clearly not family-relevant
 
 2. CLASSIFY — If including, assign taxonomy tags.
 

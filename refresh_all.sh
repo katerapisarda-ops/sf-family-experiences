@@ -24,11 +24,16 @@ python3 backend/scripts/fetch_sfzoo_events.py --days-ahead 17
 python3 backend/scripts/fetch_ybg_events.py --days-ahead 17
 python3 backend/scripts/fetch_thrive_city_events.py
 python3 backend/scripts/fetch_sfrecpark_events.py --days-ahead 17
+python3 backend/scripts/fetch_ferry_building_events.py --days-ahead 17
+python3 backend/scripts/fetch_creativity_museum_events.py --days-ahead 17
+python3 backend/scripts/fetch_salesforce_park_events.py --days-ahead 17
+python3 backend/scripts/fetch_funcheap_events.py --days-ahead 17
 
 echo ""
 echo "Step 3/3 — Refreshing recurring seeds (farmers markets + night markets)..."
 python3 backend/scripts/seed_farmers_markets.py
 python3 backend/scripts/seed_night_markets.py
+python3 backend/scripts/seed_kids_workshops.py
 
 echo ""
 echo "========================================"

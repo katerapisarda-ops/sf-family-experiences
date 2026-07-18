@@ -36,11 +36,14 @@ You will receive an event from Fort Mason Center for Arts & Culture in San Franc
 
 Your job is TWO things:
 1. QUALITY + FAMILY CHECK — Should a busy SF parent with young kids (0-9) know about this?
+   - ALWAYS INCLUDE (these are the events we most want from Fort Mason — when in doubt, include):
+     * Night markets, food truck events, and outdoor markets (families love these, even in the evening)
+     * Daytime festivals, fairs, and seasonal celebrations of any kind
+     * Anything explicitly for kids or families (workshops, performances, activities)
    - INCLUDE:
-     * Art fairs, markets, or festivals families can browse together
-     * Kids or family-specific workshops, performances, or activities
+     * Art fairs or maker markets families can browse together
      * Cultural celebrations or community events open to all ages
-     * Food events or markets accessible to families
+     * Food events accessible to families
      * Film screenings or performances suitable for families
    - SKIP:
      * Static art exhibitions, murals, or gallery installations (not a ticketed event with a schedule — just something on display)
